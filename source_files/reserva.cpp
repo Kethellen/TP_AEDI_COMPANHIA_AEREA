@@ -1,18 +1,19 @@
 #include "Reserva.h"
-#include "fazCodigo.h"
+
+#define FILE_RESERVA "data-files/reservas.txt"
 
 /**
  * Construtor da classe Reserva
- * Inicializa uma nova reserva com os parâmetros fornecidos
+ * Inicializa uma nova reserva com os parametros fornecidos
  */
 Reserva::Reserva(string codigoVoo, int numeroAssento, string codigoPassageiro) {
-    this->codigo = fazCodigo("data-files/reservas.txt");
+    this->codigo = gerarCodigo();
     this->codigoVoo = codigoVoo;
     this->numeroAssento = numeroAssento;
     this->codigoPassageiro = codigoPassageiro;
 
-    cout << "Criando reserva de código " << this->codigo << "...\n";
-    if (!reservaExiste(to_string(codigo))) {
+    cout << "Criando reserva de codigo " << this->codigo << "...\n";
+    if (!reservaExiste(this->codigo)) {
         string reservaStr = criaStringDeDados();
         if (armazenaDadosEmArquivo(reservaStr) == 0) {
             cout << "Reserva cadastrada com sucesso!\n";
@@ -20,28 +21,28 @@ Reserva::Reserva(string codigoVoo, int numeroAssento, string codigoPassageiro) {
             cerr << "Erro ao armazenar os dados da reserva.\n";
         }
     } else {
-        cout << "Reserva já existente.\n";
+        cout << "Reserva ja existente.\n";
     }
 }
 
 /**
- * Cria a string formatada para armazenar no arquivo
+ * Metodo que cria a string formatada para armazenar no arquivo
  * @return String com os dados da reserva
  */
 string Reserva::criaStringDeDados() {
-    return to_string(this->codigo) + "," + this->codigoVoo + "," +
+    return this->codigo + "," + this->codigoVoo + "," +
            to_string(this->numeroAssento) + "," + this->codigoPassageiro + ";\n";
 }
 
 /**
- * Verifica se uma reserva já existe no arquivo
- * @param identificador - Código da reserva
- * @return true se a reserva existir, false caso contrário
+ * Metodo que verifica se uma reserva ja existe no arquivo
+ * @param identificador - Codigo da reserva
+ * @return true se a reserva existir, false caso contrario
  */
 bool Reserva::reservaExiste(string identificador) {
-    ifstream arquivoReserva("data-files/reservas.txt");
+    ifstream arquivoReserva(FILE_RESERVA);
 
-    if (!arquivoReserva) {
+    if (!arquivoReserva.is_open()) {
         cerr << "Erro ao abrir o arquivo de reservas.\n";
         return false;
     }
@@ -62,12 +63,12 @@ bool Reserva::reservaExiste(string identificador) {
 }
 
 /**
- * Armazena os dados da reserva no arquivo
- * @param dados - Informações da reserva
+ * Metodo que armazena os dados da reserva no arquivo
+ * @param dados - Informacoes da reserva
  * @return 1 em caso de erro, 0 em caso de sucesso
  */
 int Reserva::armazenaDadosEmArquivo(string dados) {
-    ofstream arquivoReserva("data-files/reservas.txt", ios::app);
+    ofstream arquivoReserva(FILE_RESERVA, ios::app);
 
     if (!arquivoReserva.is_open()) {
         cerr << "Erro ao abrir o arquivo de reservas.\n";
@@ -75,50 +76,79 @@ int Reserva::armazenaDadosEmArquivo(string dados) {
     }
 
     arquivoReserva << dados;
-    arquivoReserva.flush();
     arquivoReserva.close();
-
     return 0;
 }
 
 /**
- * Pesquisa uma reserva pelo código
- * @param identificador - Código da reserva
- * @return String contendo os dados da reserva, ou mensagem de erro caso não encontrada
+ * Metodo que gera um novo codigo para a reserva
+ * @return Novo codigo gerado
  */
-string Reserva::pesquisarReserva(string identificador) {
-    ifstream arquivoReserva("data-files/reservas.txt");
+string Reserva::gerarCodigo() {
+    int maiorCodigoAtual = 0;
+    ifstream arquivoReserva(FILE_RESERVA);
 
-    if (!arquivoReserva) {
+    if (arquivoReserva.is_open()) {
+        string linha;
+
+        while (getline(arquivoReserva, linha)) {
+            if (linha.empty()) continue;
+
+            size_t pos = linha.find(",");
+            if (pos != string::npos) {
+                try {
+                    int codigoAtual = stoi(linha.substr(0, pos));
+                    if (codigoAtual > maiorCodigoAtual) {
+                        maiorCodigoAtual = codigoAtual;
+                    }
+                } catch (const std::invalid_argument &e) {
+                    continue;
+                } catch (const std::out_of_range &e) {
+                    continue;
+                }
+            }
+        }
+
+        arquivoReserva.close();
+    }
+
+    return to_string(maiorCodigoAtual + 1);
+}
+
+/**
+ * Metodo para pesquisar uma reserva pelo codigo
+ * @param identificador - Codigo da reserva
+ */
+void Reserva::pesquisarReserva(string identificador) {
+    ifstream arquivoReserva(FILE_RESERVA);
+
+    if (!arquivoReserva.is_open()) {
         cerr << "Erro ao abrir o arquivo de reservas.\n";
-        return "Erro";
+        return;
     }
 
     string linha;
     while (getline(arquivoReserva, linha)) {
-        if (linha.find(identificador) != string::npos) {
+        if (linha.find(identificador + ",") == 0) {
+            cout << "Reserva encontrada: " << linha << endl;
             arquivoReserva.close();
-            return linha;
+            return;
         }
     }
 
+    cout << "Reserva nao encontrada.\n";
     arquivoReserva.close();
-    return "Reserva não encontrada.";
 }
 
 /**
- * Atualiza uma reserva
- * @param identificador - Código da reserva
- * @param novoCodigoVoo - Novo código do voo
- * @param novoNumeroAssento - Novo número do assento
- * @param novoCodigoPassageiro - Novo código do passageiro
- * @return true se a reserva foi atualizada, false caso contrário
+ * Metodo para atualizar uma reserva
+ * @param identificador - Codigo da reserva
  */
-bool Reserva::atualizarReserva(string identificador, string novoCodigoVoo, int novoNumeroAssento, string novoCodigoPassageiro) {
-    ifstream arquivoReserva("data-files/reservas.txt");
+void Reserva::atualizarReserva(string identificador) {
+    ifstream arquivoReserva(FILE_RESERVA);
     if (!arquivoReserva.is_open()) {
-        cerr << "Erro ao abrir o arquivo de reservas para atualização.\n";
-        return false;
+        cerr << "Erro ao abrir o arquivo de reservas para atualizacao.\n";
+        return;
     }
 
     ofstream arquivoTemporario("data-files/temp.txt");
@@ -126,8 +156,21 @@ bool Reserva::atualizarReserva(string identificador, string novoCodigoVoo, int n
     bool encontrado = false;
 
     while (getline(arquivoReserva, linha)) {
-        if (linha.find(identificador) != string::npos) {
+        if (linha.find(identificador + ",") == 0) {
             encontrado = true;
+
+            string novoCodigoVoo, novoCodigoPassageiro;
+            int novoNumeroAssento;
+
+            cout << "Digite o novo codigo do voo: ";
+            cin.ignore();
+            getline(cin, novoCodigoVoo);
+            cout << "Digite o novo numero do assento: ";
+            cin >> novoNumeroAssento;
+            cin.ignore();
+            cout << "Digite o novo codigo do passageiro: ";
+            getline(cin, novoCodigoPassageiro);
+
             string novoRegistro = identificador + "," + novoCodigoVoo + "," +
                                   to_string(novoNumeroAssento) + "," + novoCodigoPassageiro + ";\n";
             arquivoTemporario << novoRegistro;
@@ -139,22 +182,25 @@ bool Reserva::atualizarReserva(string identificador, string novoCodigoVoo, int n
     arquivoReserva.close();
     arquivoTemporario.close();
 
-    remove("data-files/reservas.txt");
-    rename("data-files/temp.txt", "data-files/reservas.txt");
+    remove(FILE_RESERVA);
+    rename("data-files/temp.txt", FILE_RESERVA);
 
-    return encontrado;
+    if (encontrado) {
+        cout << "Reserva atualizada com sucesso.\n";
+    } else {
+        cout << "Reserva nao encontrada.\n";
+    }
 }
 
 /**
- * Remove uma reserva do arquivo
- * @param identificador - Código da reserva
- * @return true se a reserva foi removida, false caso contrário
+ * Metodo para remover uma reserva do arquivo
+ * @param identificador - Codigo da reserva
  */
-bool Reserva::removerReserva(string identificador) {
-    ifstream arquivoReserva("data-files/reservas.txt");
+void Reserva::removerReserva(string identificador) {
+    ifstream arquivoReserva(FILE_RESERVA);
     if (!arquivoReserva.is_open()) {
-        cerr << "Erro ao abrir o arquivo de reservas para exclusão.\n";
-        return false;
+        cerr << "Erro ao abrir o arquivo de reservas para exclusao.\n";
+        return;
     }
 
     ofstream arquivoTemporario("data-files/temp.txt");
@@ -162,7 +208,7 @@ bool Reserva::removerReserva(string identificador) {
     bool encontrado = false;
 
     while (getline(arquivoReserva, linha)) {
-        if (linha.find(identificador) != string::npos) {
+        if (linha.find(identificador + ",") == 0) {
             encontrado = true;
         } else {
             arquivoTemporario << linha << endl;
@@ -172,8 +218,12 @@ bool Reserva::removerReserva(string identificador) {
     arquivoReserva.close();
     arquivoTemporario.close();
 
-    remove("data-files/reservas.txt");
-    rename("data-files/temp.txt", "data-files/reservas.txt");
+    remove(FILE_RESERVA);
+    rename("data-files/temp.txt", FILE_RESERVA);
 
-    return encontrado;
+    if (encontrado) {
+        cout << "Reserva removida com sucesso.\n";
+    } else {
+        cout << "Reserva nao encontrada.\n";
+    }
 }
