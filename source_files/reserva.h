@@ -48,6 +48,7 @@ public:
      */
     Reserva(string codigoVoo, int numeroAssento, string codigoPassageiro);
 
+    Reserva();
     /**
      * Pesquisa uma reserva pelo codigo
      * @param identificador - Codigo da reserva

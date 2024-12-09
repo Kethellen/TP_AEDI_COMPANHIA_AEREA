@@ -25,6 +25,12 @@ Reserva::Reserva(string codigoVoo, int numeroAssento, string codigoPassageiro) {
     }
 }
 
+Reserva::Reserva() {
+    this->codigo = '\0';
+    this->codigoVoo = '\0';
+    this->numeroAssento = '\0';
+    this->codigoPassageiro = '\0';
+}
 /**
  * Metodo que cria a string formatada para armazenar no arquivo
  * @return String com os dados da reserva

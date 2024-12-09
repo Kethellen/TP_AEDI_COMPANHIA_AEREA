@@ -1,7 +1,10 @@
 #include "menu.h"
 #include "passageiro.h"
 #include "tripulacao.h"
+#include "voo.h"
+#include "reserva.h"
 #include <iostream>
+
 
 using namespace std;
 
@@ -56,62 +59,44 @@ void menu() {
  */
 void menu_voo() {
     bool exit = false;
+    Voo voo;
 
     while (!exit) {
         cout << "\n*** Gerenciar Voos ***\n"
-            << "1) Cadastrar Voo\n"
-            << "2) Atualizar Voo\n"
-            << "3) Buscar Voo\n"
-            << "4) Excluir Voo\n"
-            << "5) Sair\n";
+             << "1) Cadastrar Voo\n"
+             << "2) Atualizar Voo\n"
+             << "3) Buscar Voo\n"
+             << "4) Excluir Voo\n"
+             << "5) Sair\n";
 
         int input = 0;
         cin >> input;
 
         switch (input) {
-            case 1: {
-                string data, hora, origem, destino, codigoAviao, codigoPiloto, codigoCopiloto, codigoComissario;
-                double tarifa;
-
-                cout << "Digite a data do voo (DD/MM/AAAA): ";
-                cin.ignore();
-                getline(cin, data);
-
-                cout << "Digite a hora do voo (HH:MM): ";
-                getline(cin, hora);
-
-                cout << "Digite a origem do voo: ";
-                getline(cin, origem);
-
-                cout << "Digite o destino do voo: ";
-                getline(cin, destino);
-
-                cout << "Digite o codigo do aviao: ";
-                getline(cin, codigoAviao);
-
-                cout << "Digite o codigo do piloto: ";
-                getline(cin, codigoPiloto);
-
-                cout << "Digite o codigo do copiloto: ";
-                getline(cin, codigoCopiloto);
-
-                cout << "Digite o codigo do comissario: ";
-                getline(cin, codigoComissario);
-
-                cout << "Digite a tarifa do voo: ";
-                cin >> tarifa;
-                
+            case 1:
+                voo.adicionarVoo();
+                break;
+            case 2: {
+                string codigo;
+                cout << "Digite o codigo do voo que voce deseja atualizar: ";
+                cin >> codigo;
+                voo.atualizarVoo(codigo, voo);
                 break;
             }
-            case 2:
-                cout << "Funcao de atualizar voo ainda nao implementada.\n";
+            case 3: {
+                string codigo;
+                cout << "Digite o codigo do voo que voce deseja buscar: ";
+                cin >> codigo;
+                voo.buscarVoo(codigo);
                 break;
-            case 3:
-                cout << "Funcao de buscar voo ainda nao implementada.\n";
+            }
+            case 4: {
+                string codigo;
+                cout << "Digite o codigo do voo que voce deseja excluir: ";
+                cin >> codigo;
+                voo.excluirVoo(codigo, voo);
                 break;
-            case 4:
-                cout << "Funcao de excluir voo ainda nao implementada.\n";
-                break;
+            }
             case 5:
                 cout << "Retornando ao menu principal...\n";
                 exit = true;
@@ -128,33 +113,57 @@ void menu_voo() {
  */
 void menu_reserva() {
     bool exit = false;
+    Reserva reserva;
 
     while (!exit) {
         cout << "\n*** Gerenciar Reservas ***\n"
-            << "1) Cadastrar Reserva\n"
-            << "2) Atualizar Reserva\n"
-            << "3) Buscar Reserva\n"
-            << "4) Excluir Reserva\n"
-            << "5) Sair\n";
+             << "1) Cadastrar Reserva\n"
+             << "2) Atualizar Reserva\n"
+             << "3) Buscar Reserva\n"
+             << "4) Excluir Reserva\n"
+             << "5) Sair\n";
 
         int input = 0;
         cin >> input;
 
         switch (input) {
             case 1: {
-                cout << "Funcao de adicionar reserva ainda nao implementada.\n";
+                string codigoVoo, codigoPassageiro;
+                int numeroAssento;
 
+                cout << "Digite o codigo do voo: ";
+                cin >> codigoVoo;
+
+                cout << "Digite o numero do assento: ";
+                cin >> numeroAssento;
+
+                cout << "Digite o codigo do passageiro: ";
+                cin >> codigoPassageiro;
+
+                Reserva novaReserva(codigoVoo, numeroAssento, codigoPassageiro);
                 break;
             }
-            case 2:
-                cout << "Funcao de atualizar reserva ainda nao implementada.\n";
+            case 2: {
+                string codigo;
+                cout << "Digite o codigo da reserva que voce deseja atualizar: ";
+                cin >> codigo;
+                reserva.atualizarReserva(codigo);
                 break;
-            case 3:
-                cout << "Funcao de buscar reserva ainda nao implementada.\n";
+            }
+            case 3: {
+                string codigo;
+                cout << "Digite o codigo da reserva que voce deseja buscar: ";
+                cin >> codigo;
+                reserva.pesquisarReserva(codigo);
                 break;
-            case 4:
-                cout << "Funcao de excluir reserva ainda nao implementada.\n";
+            }
+            case 4: {
+                string codigo;
+                cout << "Digite o codigo da reserva que voce deseja excluir: ";
+                cin >> codigo;
+                reserva.removerReserva(codigo);
                 break;
+            }
             case 5:
                 cout << "Retornando ao menu principal...\n";
                 exit = true;
@@ -165,6 +174,7 @@ void menu_reserva() {
         }
     }
 }
+
 
 /**
  * Submenu para gerenciar passageiros
