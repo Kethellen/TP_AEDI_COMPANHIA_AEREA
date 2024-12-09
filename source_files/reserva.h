@@ -14,7 +14,7 @@ using namespace std;
  */
 class Reserva {
 private:
-    int codigo;
+    string codigo;
     string codigoVoo;
     int numeroAssento;
     string codigoPassageiro;
@@ -53,7 +53,7 @@ public:
      * @param identificador - Codigo da reserva
      * @return String contendo os dados da reserva ou uma mensagem de erro
      */
-    string pesquisarReserva(string identificador);
+    void pesquisarReserva(string identificador);
 
     /**
      * Atualiza uma reserva
@@ -63,14 +63,16 @@ public:
      * @param novoCodigoPassageiro - Novo codigo do passageiro
      * @return true se a reserva foi atualizada, false caso contrario
      */
-    bool atualizarReserva(string identificador, string novoCodigoVoo, int novoNumeroAssento, string novoCodigoPassageiro);
+    void atualizarReserva(string identificador);
 
     /**
      * Remove uma reserva do arquivo
      * @param identificador - Codigo da reserva
      * @return true se a reserva foi removida, false caso contrario
      */
-    bool removerReserva(string identificador);
+    void removerReserva(string identificador);
+
+    string gerarCodigo();
 };
 
 #endif

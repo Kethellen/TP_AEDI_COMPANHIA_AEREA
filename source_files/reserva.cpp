@@ -124,7 +124,6 @@ void Reserva::pesquisarReserva(string identificador) {
 
     if (!arquivoReserva.is_open()) {
         cerr << "Erro ao abrir o arquivo de reservas.\n";
-        return;
     }
 
     string linha;
@@ -132,7 +131,6 @@ void Reserva::pesquisarReserva(string identificador) {
         if (linha.find(identificador + ",") == 0) {
             cout << "Reserva encontrada: " << linha << endl;
             arquivoReserva.close();
-            return;
         }
     }
 
@@ -148,7 +146,7 @@ void Reserva::atualizarReserva(string identificador) {
     ifstream arquivoReserva(FILE_RESERVA);
     if (!arquivoReserva.is_open()) {
         cerr << "Erro ao abrir o arquivo de reservas para atualizacao.\n";
-        return;
+        // return;
     }
 
     ofstream arquivoTemporario("data-files/temp.txt");
