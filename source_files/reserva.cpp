@@ -1,6 +1,6 @@
 #include "Reserva.h"
 
-#define FILE_RESERVA "data-files/reservas.txt"
+#define FILE_RESERVA "data-files/reserva.txt"
 
 /**
  * Construtor da classe Reserva
