@@ -128,40 +128,29 @@ void menu_reserva() {
 
         switch (input) {
             case 1: {
-                string codigoVoo, codigoPassageiro;
-                int numeroAssento;
+                reserva.adicionaReserva(reserva);
 
-                cout << "Digite o codigo do voo: ";
-                cin >> codigoVoo;
-
-                cout << "Digite o numero do assento: ";
-                cin >> numeroAssento;
-
-                cout << "Digite o codigo do passageiro: ";
-                cin >> codigoPassageiro;
-
-                Reserva novaReserva(codigoVoo, numeroAssento, codigoPassageiro);
                 break;
             }
             case 2: {
                 string codigo;
                 cout << "Digite o codigo da reserva que voce deseja atualizar: ";
                 cin >> codigo;
-                reserva.atualizarReserva(codigo);
+                reserva.atualizaReserva(codigo, reserva);
                 break;
             }
             case 3: {
                 string codigo;
                 cout << "Digite o codigo da reserva que voce deseja buscar: ";
                 cin >> codigo;
-                reserva.pesquisarReserva(codigo);
+                reserva.buscaReserva(codigo);
                 break;
             }
             case 4: {
                 string codigo;
                 cout << "Digite o codigo da reserva que voce deseja excluir: ";
                 cin >> codigo;
-                reserva.removerReserva(codigo);
+                reserva.excluirReserva(codigo, reserva);
                 break;
             }
             case 5:

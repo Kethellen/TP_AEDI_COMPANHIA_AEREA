@@ -2,78 +2,64 @@
 #define RESERVA_H
 
 #include <iostream>
-#include <string>
 #include <fstream>
 #include <sstream>
+#include <vector>
+#include <string>
 
 using namespace std;
 
-/**
+/***
  * Classe Reserva
- * Gerencia os dados e operacoes de uma reserva
+ * Representa uma reserva com atributos como codigo, codigo do voo,
+ * numero do assento e codigo do passageiro.
  */
 class Reserva {
 private:
+    /*** Codigo da reserva ***/
     string codigo;
+
+    /*** Codigo do voo associado ***/
     string codigoVoo;
+
+    /*** Numero do assento na reserva ***/
     int numeroAssento;
+
+    /*** Codigo do passageiro associado ***/
     string codigoPassageiro;
 
-    /**
-     * Verifica se uma reserva ja existe no arquivo
-     * @param identificador - Codigo da reserva
-     * @return true se a reserva existir, false caso contrario
-     */
-    bool reservaExiste(string identificador);
-
-    /**
-     * Cria uma string formatada com os dados da reserva
-     * @return String formatada com os dados da reserva
-     */
-    string criaStringDeDados();
-
-    /**
-     * Armazena os dados da reserva no arquivo
-     * @param dados - Informacoes da reserva
-     * @return 1 em caso de erro, 0 em caso de sucesso
-     */
-    int armazenaDadosEmArquivo(string dados);
-
 public:
-    /**
-     * Construtor da classe Reserva
-     * @param codigoVoo - Codigo do voo
-     * @param numeroAssento - Numero do assento
-     * @param codigoPassageiro - Codigo do passageiro
-     */
+    /*** Construtores ***/
+    Reserva();
     Reserva(string codigoVoo, int numeroAssento, string codigoPassageiro);
 
-    Reserva();
-    /**
-     * Pesquisa uma reserva pelo codigo
-     * @param identificador - Codigo da reserva
-     * @return String contendo os dados da reserva ou uma mensagem de erro
-     */
-    void pesquisarReserva(string identificador);
+    /*** Metodos de manipulacao de atributos (getters e setters) ***/
+    void setCodigo();
+    void setCodigo(string codigo);
+    string getCodigo();
 
-    /**
-     * Atualiza uma reserva
-     * @param identificador - Codigo da reserva
-     * @param novoCodigoVoo - Novo codigo do voo
-     * @param novoNumeroAssento - Novo numero do assento
-     * @param novoCodigoPassageiro - Novo codigo do passageiro
-     * @return true se a reserva foi atualizada, false caso contrario
-     */
-    void atualizarReserva(string identificador);
+    void setCodigoVoo(string codigoVoo);
+    string getCodigoVoo();
 
-    /**
-     * Remove uma reserva do arquivo
-     * @param identificador - Codigo da reserva
-     * @return true se a reserva foi removida, false caso contrario
-     */
-    void removerReserva(string identificador);
+    void setNumeroAssento(int numeroAssento);
+    int getNumeroAssento();
 
-    string gerarCodigo();
+    void setCodigoPassageiro(string codigoPassageiro);
+    string getCodigoPassageiro();
+
+    /*** Metodos de funcionalidade ***/
+    string criaStringDeDados(); // Gera a representacao da reserva como uma string
+    void mostrarReserva();      // Exibe os detalhes da reserva
+    void adicionaReserva(Reserva &r); // Adiciona uma nova reserva ao arquivo
+
+    /*** Metodos auxiliares ***/
+    bool reservaExiste(string identificador); // Verifica se a reserva ja existe no arquivo
+    int armazenaDadosEmArquivo(string dados); // Salva os dados da reserva no arquivo
+
+    /*** Metodos para operacoes CRUD ***/
+    void buscaReserva(string codigo);         // Busca uma reserva pelo codigo
+    void atualizaReserva(string codigo, Reserva &r); // Atualiza uma reserva existente
+    void excluirReserva(string codigo, Reserva &r);  // Exclui uma reserva do arquivo
 };
 
 #endif
