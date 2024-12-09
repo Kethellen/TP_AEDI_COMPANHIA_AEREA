@@ -41,7 +41,7 @@ string Voo::criaStringDeDados() {
     }
 
     return codigo + "," + data + "," + hora + "," + origem + "," + destino + "," + codigoAviao + "," +
-           tripulacaoDados + "," + passageirosDados + ";\n";
+            tripulacaoDados + "," + passageirosDados + ";\n";
 }
 
 
@@ -114,16 +114,52 @@ void Voo::adicionarVoo() {
     cin >> codigoAviao;
     setCodigoAviao(codigoAviao);
 
-    //setCodigo();
+    setCodigo();
 
-    //BUG
-    /*
+    
     if (armazenaDadosEmArquivo(FILE_VOO, criaStringDeDados()) == -1) {
         cout << "Erro ao salvar em arquivo!" << endl;
     } else {
         cout << "Voo salvo com sucesso!" << endl;
     }
-    */
+    
+}
+
+/**
+ * Metodo para definir acessar e definir o atributo codigo da classe pessoa
+ */
+void Voo::setCodigo() {
+    int maiorCodigoAtual = 0;
+    string linha;
+
+    // Abre o arquivo para leitura
+    ifstream arq_entrada(FILE_VOO);
+
+    if (!arq_entrada.is_open()) {
+        cout << "Erro ao abrir o arquivo de passageiros para leitura." << endl;
+        return;
+    }
+
+    // Percorre todas as linhas do arquivo
+    while (getline(arq_entrada, linha)) {
+        // Extrai o codigo (considerando que o codigo esta antes da primeira virgula)
+        size_t pos = linha.find(",");
+        if (pos != string::npos) {
+            string codigoExtraido = linha.substr(0, pos);
+            // Remove o prefixo "P" e converte para numero
+            if (codigoExtraido[0] == 'V') {
+                int codigoNumerico = stoi(codigoExtraido.substr(1));
+                if (codigoNumerico > maiorCodigoAtual) {
+                    maiorCodigoAtual = codigoNumerico;
+                }
+            }
+        }
+    }
+
+    arq_entrada.close();
+
+    // Define o novo codigo incrementando o maior codigo encontrado
+    this->codigo = "V" + to_string(maiorCodigoAtual + 1);
 }
 
 void Voo::buscarVoo(string codigo) {
@@ -216,4 +252,16 @@ void Voo::atualizarVoo(string codigo, Voo &v) {
 }
 
 void Voo::excluirVoo(string codigo, Voo &v) {
+}
+
+int Voo::armazenaDadosEmArquivo(string arquivo, string dados) {
+    ofstream arquivoEscrita(arquivo, ios::app);
+    if (!arquivoEscrita.is_open()) {
+        cerr << "Erro ao abrir o arquivo " << arquivo << " para escrita.\n";
+        return -1;
+    }
+
+    arquivoEscrita << dados;
+    arquivoEscrita.close();
+    return 0;
 }

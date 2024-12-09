@@ -2,8 +2,6 @@
 
 #define FILE_PASSAGEIRO "../data_files/passageiro.txt"
 
-// int maiorCodigo = 0;
-
 /**
  * Construtor padrao da classe Passageiro
  */

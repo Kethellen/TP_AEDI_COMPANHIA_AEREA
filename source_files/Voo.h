@@ -55,6 +55,8 @@ public:
     void buscarVoo(string codigo);
     void atualizarVoo(string codigo, Voo &v);
     void excluirVoo(string codigo, Voo &v);
+
+    int armazenaDadosEmArquivo(string arquivo, string dados);
 };
 
 #endif
